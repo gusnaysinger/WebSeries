@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+nav div img {
+  width: 130px;
+  height: auto;
+}
+.navbar-brand {
+  font-family: 'Oswald', sans-serif;
+  color: white;
+  font-size: 2.3rem;
+  flex-wrap: nowrap;
+}
+.navbar-brand button {
+  flex-wrap: nowrap;
+}
+.top {
+  text-align: center;
+  margin-top: 1rem;
+}
+.top h4 {
+  font-family: 'Oswald', sans-serif;
+  color: white;
+  font-size: 1.6rem;
+}
+
+.serie {
+  display: flex;
+  flex-wrap: wrap;             /* permite que os itens "quebrem linha" */
+  gap: 20px;                   /* espaçamento entre os cards */
+  justify-content: center;     /* centraliza os itens na linha */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.card {
+  width: 100%;
+  max-width: 18rem;            /* limita a largura do card */
+  flex: 1 1 calc(25% - 20px);  /* tenta colocar até 4 por linha, ajustando com o gap */
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) {
+  .card {
+    flex: 1 1 calc(33.33% - 20px); /* até 3 por linha */
+  }
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex: 1 1 calc(50% - 20px); /* até 2 por linha */
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    flex: 1 1 100%; /* 1 por linha */
+  }
+}
+
+.card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;       /* número de linhas visíveis */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 4.5em;           /* opcional para manter altura igual */
+}
+
+/* Mostra mais texto em telas maiores */
+@media (min-width: 992px) {
+  .card-text {
+    -webkit-line-clamp: 6;
+    min-height: 9em;
+  }
+}

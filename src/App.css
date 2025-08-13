@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+nav div img {
+  width: 130px;
+  height: auto;
+}
+.navbar-brand {
+  font-family: 'Oswald', sans-serif;
+  color: white;
+  font-size: 2.3rem;
+  flex-wrap: nowrap;
+}
+.navbar-brand button {
+  flex-wrap: nowrap;
+}
+.top {
+  text-align: center;
+  margin-top: 1rem;
+}
+.top h4 {
+  font-family: 'Oswald', sans-serif;
+  color: white;
+  font-size: 1.6rem;
+}
+
+/* ===MENU LATERAL=== */
+.custom-offcanvas {
+    width: 250px !important;
+    max-width: 80vw !important;
+}
+ul li {
+    padding: 10px 10px !important;
+    font-size: 1.2rem;
+}
+ul li a, .text{
+    color: #198754;
+    text-decoration: none;
+    &:hover {
+        color: white;
+    }
+}
+/* ================== */

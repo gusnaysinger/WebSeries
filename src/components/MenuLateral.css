@@ -1,0 +1,15 @@
+.custom-offcanvas {
+    width: 250px !important;
+    max-width: 80vw !important;
+}
+ul li {
+    padding: 10px 10px !important;
+    font-size: 1.2rem;
+}
+ul li a, .text{
+    color: #198754;
+    text-decoration: none;
+    &:hover {
+        color: white;
+    }
+}
