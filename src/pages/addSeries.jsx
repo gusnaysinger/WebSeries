@@ -1,11 +1,14 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import RatingStars from "../components/RatingStars";
 import "./addSerie.css";
 import { useState } from "react";
 
 export default function AddSeries() {
   const API_KEY = "b11672b2b15080e415e1189c03f1a0f9";
+
+  const [userRating, setUserRating] = useState(0);
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -13,7 +16,6 @@ export default function AddSeries() {
 
   const [preview, setPreview] = useState(null);
   const [selectedGenres, setSelectedGenres] = useState([]);
-  const [description, setDescription] = useState("");
 
   const genres = [
     "Ação",
@@ -56,7 +58,6 @@ export default function AddSeries() {
     );
     const data = await res.json();
     setSelectedSeries(data);
-    setDescription(data.overview || "");
     setSelectedGenres(data.genres ? data.genres.map((g) => g.name) : []);
   };
 
@@ -70,11 +71,11 @@ export default function AddSeries() {
   };
 
   // Clique em sugestão
-  const handleSuggestionClick = (serie) => {
-    setQuery(serie.name);
-    setSuggestions([]);
-    fetchSeriesDetails(serie.id);
-  };
+  // const handleSuggestionClick = (serie) => {
+  //   setQuery(serie.name);
+  //   setSuggestions([]);
+  //   fetchSeriesDetails(serie.id);
+  // };
 
   // Preview imagem manual
   const handleImageChange = (e) => {
@@ -141,7 +142,20 @@ export default function AddSeries() {
                   <li
                     key={serie.id}
                     className="list-group-item list-group-item-action"
-                    onClick={() => handleSuggestionClick(serie)}
+                    onClick={() => {
+                      setSelectedSeries(serie);
+                      setQuery(serie.name);
+                      setSuggestions([]);
+
+                      // Atualiza o preview com a capa da API
+                      if (serie.poster_path) {
+                        setPreview(
+                          `https://image.tmdb.org/t/p/w500${serie.poster_path}`
+                        );
+                      }
+                      // Busca os detalhes (inclui gêneros e descrição)
+                      fetchSeriesDetails(serie.id);
+                    }}
                     style={{ cursor: "pointer" }}
                   >
                     {serie.name}
@@ -150,72 +164,79 @@ export default function AddSeries() {
               </ul>
             )}
 
-            {/* Preview dos dados */}
-            {selectedSeries && (
-              <div className="card p-3 mb-3">
-                <h5>{selectedSeries.name}</h5>
-                <p>{selectedSeries.overview}</p>
-                <p>
-                  <strong>Avaliação:</strong> {selectedSeries.vote_average}
-                </p>
-                {selectedSeries.poster_path && (
-                  <img
-                    src={`https://image.tmdb.org/t/p/w300${selectedSeries.poster_path}`}
-                    alt={selectedSeries.name}
-                    className="img-fluid rounded"
-                  />
-                )}
-              </div>
-            )}
-
             {/* Gêneros */}
             <div className="mb-2">
               <label className="form-label">Gêneros</label>
-              <div className="dropdown">
-                <button
-                  className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  {selectedGenres.length > 0
-                    ? selectedGenres.join(", ")
-                    : "Selecione os gêneros"}
-                </button>
-                <ul
-                  className="dropdown-menu w-100"
-                  style={{ maxHeight: 250, overflowY: "auto" }}
-                >
-                  {genres.map((genre) => (
-                    <li key={genre}>
-                      <label className="dropdown-item">
-                        <input
-                          type="checkbox"
-                          value={genre}
-                          checked={selectedGenres.includes(genre)}
-                          onChange={handleGenreChange}
-                          className="form-check-input me-2"
-                        />
-                        {genre}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+
+              {selectedSeries && selectedSeries.genres?.length > 0 ? (
+                // Mostra somente os gêneros vindos da API
+                <div className="p-2 border rounded">
+                  {selectedGenres.join(", ")}
+                </div>
+              ) : (
+                // Caso a API não traga gêneros, mostra o dropdown manual
+                <div className="dropdown">
+                  <button
+                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  >
+                    {selectedGenres.length > 0
+                      ? selectedGenres.join(", ")
+                      : "Selecione os gêneros"}
+                  </button>
+                  <ul
+                    className="dropdown-menu w-100"
+                    style={{ maxHeight: 250, overflowY: "auto" }}
+                  >
+                    {genres.map((genre) => (
+                      <li key={genre}>
+                        <label className="dropdown-item">
+                          <input
+                            type="checkbox"
+                            value={genre}
+                            checked={selectedGenres.includes(genre)}
+                            onChange={handleGenreChange}
+                            className="form-check-input me-2"
+                          />
+                          {genre}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <small className="text-muted">Escolha um ou mais gêneros.</small>
             </div>
+            <div className="row">
+              {/* Avaliação da API */}
+              <div className="col-6 mt-2">
+                <label htmlFor="rating" className="form-label">
+                  Avaliação TMDB
+                </label>
+                {selectedSeries && (
+                  <p className="fs-5 mb-0">
+                    ⭐ {selectedSeries.vote_average?.toFixed(1) || "N/A"}
+                  </p>
+                )}
+              </div>
 
-            {/* Descrição */}
+              {/* Avaliação do usuário */}
+              <div className="col-6 mt-2">
+                <label htmlFor="rating" className="form-label mb-4">
+                  Sua Avaliação
+                </label>
+                <RatingStars rating={userRating} setRating={setUserRating} />
+              </div>
+            </div>
+
+            {/* Opinião */}
             <div className="mb-2">
               <label htmlFor="description" className="form-label">
-                Descrição
+                Opinião
               </label>
-              <textarea
-                className="form-control"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              ></textarea>
+              <textarea className="form-control" id="description"></textarea>
             </div>
 
             <button type="submit" className="btn btn-primary">
