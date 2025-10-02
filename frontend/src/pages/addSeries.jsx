@@ -16,26 +16,59 @@ export default function AddSeries() {
 
   const [preview, setPreview] = useState(null);
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [searchGenre, setSearchGenre] = useState("");
 
   const genres = [
     "Ação",
+    "Adulto",
+    "Animação",
+    "Anime",
     "Aventura",
+    "Arte",
+    "Biografia",
+    "Ciência",
     "Comédia",
+    "Crime",
+    "Culinária",
+    "Curta",
+    "Documentário",
     "Drama",
+    "Dorama",
+    "Educação",
+    "Esporte",
+    "Experimental",
+    "Família",
     "Fantasia",
     "Ficção Científica",
-    "Romance",
-    "Suspense",
-    "Terror",
-    "Animação",
-    "Documentário",
-    "Policial",
-    "Mistério",
-    "Musical",
+    "Game Show",
+    "Guerra",
     "Histórico",
+    "Infantil",
+    "Legal",
+    "Medicina",
+    "Minissérie",
+    "Mistério",
+    "Moda",
+    "Musical",
+    "Natureza",
+    "Negócios",
+    "Notícias",
+    "Policial",
+    "Política",
+    "Reality",
+    "Religião",
+    "Romance",
+    "Sitcom",
+    "Supernatural",
+    "Suspense",
+    "Talk Show",
+    "Tecnologia",
+    "Terror",
+    "Viagem",
+    "Western"
   ];
 
-  // Atualiza texto e busca sugestões
+  // Atualiza texto e busca sugestões de séries
   const handleInputChange = async (e) => {
     const value = e.target.value;
     setQuery(value);
@@ -70,27 +103,12 @@ export default function AddSeries() {
     fetchSeriesDetails(serie.id);
   };
 
-  // Clique em sugestão
-  // const handleSuggestionClick = (serie) => {
-  //   setQuery(serie.name);
-  //   setSuggestions([]);
-  //   fetchSeriesDetails(serie.id);
-  // };
-
   // Preview imagem manual
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setPreview(URL.createObjectURL(file));
     }
-  };
-
-  // Alterna seleção de gênero manual
-  const handleGenreChange = (e) => {
-    const value = e.target.value;
-    setSelectedGenres((prev) =>
-      prev.includes(value) ? prev.filter((g) => g !== value) : [...prev, value]
-    );
   };
 
   return (
@@ -174,41 +192,72 @@ export default function AddSeries() {
                   {selectedGenres.join(", ")}
                 </div>
               ) : (
-                // Caso a API não traga gêneros, mostra o dropdown manual
-                <div className="dropdown">
-                  <button
-                    className="btn btn-outline-secondary dropdown-toggle w-100 text-start"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    {selectedGenres.length > 0
-                      ? selectedGenres.join(", ")
-                      : "Selecione os gêneros"}
-                  </button>
-                  <ul
-                    className="dropdown-menu w-100"
-                    style={{ maxHeight: 250, overflowY: "auto" }}
-                  >
-                    {genres.map((genre) => (
-                      <li key={genre}>
-                        <label className="dropdown-item">
-                          <input
-                            type="checkbox"
-                            value={genre}
-                            checked={selectedGenres.includes(genre)}
-                            onChange={handleGenreChange}
-                            className="form-check-input me-2"
-                          />
-                          {genre}
-                        </label>
-                      </li>
+                // Input com sugestões e tags
+                <div>
+                  {/* Tags já selecionadas */}
+                  <div className="mb-2 d-flex flex-wrap gap-2">
+                    {selectedGenres.map((genre) => (
+                      <span
+                        key={genre}
+                        className="badge bg-secondary d-flex align-items-center"
+                      >
+                        {genre}
+                        <button
+                          type="button"
+                          className="btn-close btn-close-white ms-2"
+                          aria-label="Remover"
+                          onClick={() =>
+                            setSelectedGenres(
+                              selectedGenres.filter((g) => g !== genre)
+                            )
+                          }
+                          style={{ fontSize: "0.6rem" }}
+                        ></button>
+                      </span>
                     ))}
-                  </ul>
+                  </div>
+
+                  {/* Input de busca */}
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Digite um gênero..."
+                    value={searchGenre}
+                    onChange={(e) => setSearchGenre(e.target.value)}
+                  />
+
+                  {/* Sugestões */}
+                  {searchGenre && (
+                    <ul
+                      className="list-group mt-1"
+                      style={{ maxHeight: 200, overflowY: "auto" }}
+                    >
+                      {genres
+                        .filter(
+                          (g) =>
+                            g.toLowerCase().includes(searchGenre.toLowerCase()) &&
+                            !selectedGenres.includes(g)
+                        )
+                        .map((g) => (
+                          <li
+                            key={g}
+                            className="list-group-item list-group-item-action"
+                            onClick={() => {
+                              setSelectedGenres([...selectedGenres, g]);
+                              setSearchGenre("");
+                            }}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {g}
+                          </li>
+                        ))}
+                    </ul>
+                  )}
                 </div>
               )}
               <small className="text-muted">Escolha um ou mais gêneros.</small>
             </div>
+
             <div className="row">
               {/* Avaliação da API */}
               <div className="col-6 mt-2">
