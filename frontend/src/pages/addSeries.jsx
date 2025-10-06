@@ -121,8 +121,9 @@ export default function AddSeries() {
             <div className="Banner preview-box mb-3">
               {preview ? (
                 <img src={preview} alt="Preview" className="preview-img" />
-              ) : (
-                <span>Preview da Imagem</span>
+              )
+               : (
+                <span></span>
               )}
             </div>
             <input
@@ -184,7 +185,7 @@ export default function AddSeries() {
 
             {/* Gêneros */}
             <div className="mb-2">
-              <label className="form-label">Gêneros</label>
+              <label className="form-label">Gênero</label>
 
               {selectedSeries && selectedSeries.genres?.length > 0 ? (
                 // Mostra somente os gêneros vindos da API
@@ -285,7 +286,7 @@ export default function AddSeries() {
               <label htmlFor="description" className="form-label">
                 Opinião
               </label>
-              <textarea className="form-control" id="description"></textarea>
+              <textarea className="form-control" id="description" rows={8}></textarea>
             </div>
 
             <button type="submit" className="btn btn-primary">
